@@ -11,26 +11,26 @@ class StudentModel(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(100), nullable=False)
 	major = db.Column(db.String(100), nullable=False)
-	gpa = db.Column(db.Integer, nullable=False)
+	grade = db.Column(db.String, nullable=False)
 
 	def __repr__(self):
-		return f"Student(name = {name}, major = {major}, Gpa = {gpa})"
+		return f"Student(name = {name}, major = {major}, Grade = {grade})"
 
 student_put_args = reqparse.RequestParser()
 student_put_args.add_argument("name", type=str, help="Name of the Student is required", required=True)
 student_put_args.add_argument("major", type=str, help="The Major of the Student", required=True)
-student_put_args.add_argument("gpa", type=int, help="Student's Gpa", required=True)
+student_put_args.add_argument("grade", type=str, help="Student's Grade", required=True)
 
 student_update_args = reqparse.RequestParser()
 student_update_args.add_argument("name", type=str, help="Name of the Student is required")
 student_update_args.add_argument("major", type=str, help="The Major of the Student")
-student_update_args.add_argument("gpa", type=int, help="Student's Gpa")
+student_update_args.add_argument("grade", type=str, help="Student's Grade")
 
 resource_fields = {
 	'id': fields.Integer,
 	'name': fields.String,
 	'major': fields.String,
-	'gpa': fields.Integer
+	'grade': fields.String
 }
 
 class Student(Resource):
@@ -48,7 +48,7 @@ class Student(Resource):
 		if result:
 			abort(409, message="Student id taken...")
 
-		student = StudentModel(id=student_id, name=args['name'], major=args['major'], gpa=args['gpa'])
+		student = StudentModel(id=student_id, name=args['name'], major=args['major'], grade=args['grade'])
 		db.session.add(student)
 		db.session.commit()
 		return student, 201
@@ -64,8 +64,8 @@ class Student(Resource):
 			result.name = args['name']
 		if args['major']:
 			result.major = args['major']
-		if args['gpa']:
-			result.gpa = args['gpa']
+		if args['grade']:
+			result.grade = args['grade']
 
 		db.session.commit()
 
